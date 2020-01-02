@@ -6,10 +6,9 @@ class Platforms:
         if name == "__path__":
             return []
         for support in ["official", "partner", "community"]:
-            try:
-                return importlib.import_module("litex_boards." + support + ".platforms." + name)
-            except ModuleNotFoundError:
-                pass
+            candidate = "litex_boards." + support + ".platforms." + name
+            if importlib.util.find_spec(candidate) is not None:
+                return importlib.import_module(candidate)
         raise ModuleNotFoundError
 
 sys.modules[__name__] = Platforms()
